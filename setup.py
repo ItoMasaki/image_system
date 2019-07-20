@@ -8,7 +8,9 @@ setup(
     version='0.0.1',
     packages=[],
     py_modules=[
-        'image_system'
+        'image_system',
+        'machine_learning/classifier',
+        'machine_learning/model',
     ],
     install_requires=['setuptools'],
     zip_safe=True,
