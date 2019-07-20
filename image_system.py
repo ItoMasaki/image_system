@@ -2,12 +2,15 @@ import rclpy
 from rclpy.node import Node
 
 from std_msgs.msg import String
+from rclpy.qos import qos_profile_sensor_data
+
+from machine_learning.classifier import detect_human_sex
 
 class ImageSystem(Node):
     def __init__(self):
         super(ImageSystem, self).__init__("ImageSystem")
 
-        self.create_subscription(String, "/image_system/command", self.command_callback)
+        self.create_subscription(String, "/image_system/command", self.command_callback, qos_profile_sensor_data)
 
 
     def command_callback(self, msg):
