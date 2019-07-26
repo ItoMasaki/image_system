@@ -1,1 +1,3 @@
 model/*
+machine_learning/__pycache__
+machine_learning/__pycache__/*
