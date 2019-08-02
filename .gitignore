@@ -1,2 +1,4 @@
 model/*
-machine_learning/__pycache__
+.DS_Store
+detect_human/__pycache__
+detect_human/__pycache__/*
