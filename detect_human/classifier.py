@@ -13,11 +13,11 @@ from matplotlib import pyplot as plt
 from numpy import array, float32, argmax
 
 
-print("[ ImageSystem:MachineLearning ] Loading model ...")
+print("[INFO] [DetectHuman]: LOADING MODEL")
 model = L.Classifier(VGG_16())
 optimizer = optimizers.Adam()
 optimizer.setup(model)
-print("[ ImageSystem:MachineLearning ] Done!")
+print("[INFO] [DetectHuman]: DONE")
 
 serializers.load_npz("image_system/model/cifier_adam.npz", model)
 

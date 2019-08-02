@@ -8,8 +8,8 @@ from scipy.ndimage.filters import gaussian_filter
 import chainer
 from chainer import cuda, serializers, functions as F
 
-from entity import params, JointType
-from models.CocoPoseNet import CocoPoseNet
+from detect_human.entity import params, JointType
+from detect_human.CocoPoseNet import CocoPoseNet
 
 
 class PoseDetector(object):
@@ -19,7 +19,7 @@ class PoseDetector(object):
         if model is not None:
             self.model = model
         else:
-            print('Loading the model...')
+            print('[INFO] [DetectHuman]: LOADING POSE MODEL')
             self.model = params['archs'][arch]()
 
             if weights_file:

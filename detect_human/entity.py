@@ -1,9 +1,9 @@
 from enum import IntEnum
 
-from models.CocoPoseNet import CocoPoseNet
+from detect_human.CocoPoseNet import CocoPoseNet
 
-from models.FaceNet import FaceNet
-from models.HandNet import HandNet
+from detect_human.FaceNet import FaceNet
+from detect_human.HandNet import HandNet
 
 
 class JointType(IntEnum):
