@@ -9,8 +9,14 @@ setup(
     packages=[],
     py_modules=[
         'image_system',
-        'machine_learning/classifier',
-        'machine_learning/model',
+        'detect_human/HandNet',
+        'detect_human/FaceNet',
+        'detect_human/CocoPoseNet',
+        'detect_human/entity',
+        'detect_human/pose_detector',
+        'detect_human/detect_human',
+        'detect_human/classifier',
+        'detect_human/model',
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -31,6 +37,7 @@ setup(
     entry_points={
         'console_scripts': [
             'image_system = image_system:main',
+            'detect_human = detect_human.detect_human:main',
         ],
     },
 )
