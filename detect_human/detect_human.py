@@ -34,7 +34,7 @@ class DetectHuman(Node):
         self.bridge = CvBridge()
 
         self.image_data = None
-        self.one_time = False
+        self.one_time = True
 
         self.get_logger().info("READY")
 
