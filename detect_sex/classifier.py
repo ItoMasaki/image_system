@@ -4,7 +4,7 @@ from chainer import links as L
 from chainer import optimizers
 import chainer.computational_graph as c
 
-from machine_learning.model import VGG_16
+from detect_sex.model import VGG_16
 
 from glob import glob
 from PIL import Image
@@ -24,7 +24,7 @@ serializers.load_npz("image_system/model/cifier_adam.npz", model)
 def detect_human_sex(image):
     # image must be numpy array
     image.dtype = "float32"
-    image = transpose(2, 0, 1).reshape(1, 3, 96, 96)
+    image = image.transpose(2, 0, 1).reshape(1, 3, 96, 96)
     predicted = model.predictor(image)
     sex = argmax(array(predicted.data))
 

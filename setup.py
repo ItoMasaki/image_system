@@ -15,8 +15,9 @@ setup(
         'detect_human/entity',
         'detect_human/pose_detector',
         'detect_human/detect_human',
-        'detect_human/classifier',
-        'detect_human/model',
+        'detect_sex/detect_sex',
+        'detect_sex/classifier',
+        'detect_sex/model',
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -38,6 +39,7 @@ setup(
         'console_scripts': [
             'image_system = image_system:main',
             'detect_human = detect_human.detect_human:main',
+            'detect_sex = detect_sex.detect_sex:main',
         ],
     },
 )

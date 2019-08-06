@@ -5,6 +5,8 @@ from std_msgs.msg import String
 from rclpy.qos import qos_profile_sensor_data
 
 from machine_learning.classifier import detect_human_sex
+from detect_human.detect_human import detect_human
+from detect_sex.detect_sex import detect_sex
 
 class ImageSystem(Node):
     def __init__(self):
@@ -33,12 +35,17 @@ class ImageSystem(Node):
 
 
     def detect_human(self):
-        print("[*] detect human")
+        # [TODO] input image array (numpy)
+        number = detect_human(image)
+        
 
     def detect_sex(self):
-        print("[*] detect sex")
+        # [TODO] input image array (numpy)
+        flag = detect_sex(image)
+
 
     def detect_object(self):
+        # [TODO] sonouti yaru!
         print("[*] detect object")
 
 
