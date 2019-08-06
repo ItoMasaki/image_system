@@ -3,16 +3,15 @@ import cv2
 
 from cv_bridge import CvBridge
 
-from detect_human.entity import params
 
-from detect_sex.classifier import detect_human_sex
+from detect_modules.detect_sex.classifier import detect_human_sex
 
 import numpy as np
 from numpy import array, float32
 
 
 cascade = cv2.CascadeClassifier(
-    "image_system/model/haarcascade_frontalface_alt.xml")
+    'image_system/model/haarcascade_frontalface_alt.xml')
 
 
 def detect_sex(self, msg):
@@ -57,6 +56,13 @@ def crop_face(self, img, rect):
     crop_bottom = min(orig_img_h, int(crop_center_y + crop_height / 2))
     cropped_face = img[crop_top:crop_bottom, crop_left:crop_right]
     max_edge_len = np.max(cropped_face.shape[:-1])
-    padded_face = np.zeros((max_edge_len, max_edge_len, cropped_face.shape[-1]), dtype=np.uint8)
-    padded_face[0:cropped_face.shape[0], 0:cropped_face.shape[1]] = cropped_face
+    padded_face = np.zeros(
+        (
+            max_edge_len,
+            max_edge_len,
+            cropped_face.shape[-1]
+        ),
+        dtype=np.uint8)
+    padded_face[0:cropped_face.shape[0],
+                0:cropped_face.shape[1]] = cropped_face
     return padded_face, (crop_left, crop_top)
