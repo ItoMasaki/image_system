@@ -25,14 +25,6 @@ setup(
           'detect_modules/detect_sex/detect_sex.py',
           'detect_modules/detect_sex/model.py'
           ]),
-"""
-        ('lib/'+package_name+'/model'),
-        [
-            'model/cifier_adam.npz',
-            'model/coco_posenet.npz',
-            'model/haarcascade_frontalface_alt.xml'
-        ]
-"""
     ],
     install_requires=['setuptools'],
     zip_safe=True,
