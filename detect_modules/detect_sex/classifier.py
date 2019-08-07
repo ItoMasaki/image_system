@@ -21,10 +21,12 @@ model = L.Classifier(VGG_16())
 optimizer = optimizers.Adam()
 optimizer.setup(model)
 print('[INFO] [DetectHuman]: DONE',flush=True)
-npz = os.path.abspath(__file__).replace(
-    'detect_modules/detect_sex/classifier.py', 'model/cifier_adam.npz')
+#npz = os.path.abspath(__file__).replace(
+#    'detect_modules/detect_sex/classifier.py', 'model/cifier_adam.npz')
 
-serializers.load_npz(npz, model)
+npz_path = "image_system/model/cifier_adam.npz"
+
+serializers.load_npz(npz_path, model)
 
 
 def detect_human_sex(image):
