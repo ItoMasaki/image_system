@@ -41,7 +41,7 @@ def detect_sex(self, msg):
                 man += 1
             else:
                 pass
-    return woman, man
+    return str(woman), str(man)
 
 
 def crop_face(self, img, rect):
