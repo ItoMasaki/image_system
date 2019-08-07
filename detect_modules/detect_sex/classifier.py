@@ -16,11 +16,11 @@ from numpy import argmax, array, float32
 from .model import VGG_16
 
 
-print('[INFO] [DetectHuman]: LOADING MODEL')
+print('[INFO] [DetectHuman]: LOADING MODEL',flush=True)
 model = L.Classifier(VGG_16())
 optimizer = optimizers.Adam()
 optimizer.setup(model)
-print('[INFO] [DetectHuman]: DONE')
+print('[INFO] [DetectHuman]: DONE',flush=True)
 npz = os.path.abspath(__file__).replace(
     'detect_modules/detect_sex/classifier.py', 'model/cifier_adam.npz')
 
