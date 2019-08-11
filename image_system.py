@@ -18,9 +18,22 @@ class ImageSystem(Node):
     def __init__(self):
         super(ImageSystem, self).__init__('ImageSystem')
 
-        self.senses_publisher = self.create_publisher(String, 'Cerebrum/Command', qos_profile_sensor_data)
-        self.create_subscription(String, '/image_system/command', self.command_callback, qos_profile_sensor_data)
-        self.create_subscription(Image, '/camera/color/image_raw', self.get_image, qos_profile_sensor_data)
+        self.senses_publisher = self.create_publisher(
+                                    String,
+                                    'cerebrum/command',
+                                    qos_profile_sensor_data
+                                    )
+
+        self.create_subscription(
+            String,
+            '/image_system/command',
+            self.command_callback,
+            qos_profile_sensor_data)
+        self.create_subscription(
+            Image,
+            '/camera/color/image_raw',
+            self.get_image,
+            qos_profile_sensor_data)
         self.message = None
         self.command = None
         self._trans_message = String()
@@ -46,13 +59,11 @@ class ImageSystem(Node):
         if 'object' == command[0].replace('Command:', ''):
             self.detect_object()
 
-
     # detect number's human
     def detect_human(self):
         number = detect_human(self.image)
         print(number)
         return number
-
 
     # detect human sex
     def detect_sex(self):
@@ -60,24 +71,20 @@ class ImageSystem(Node):
         print(woman + "|" + man)
         return woman + '|' + man
 
-
-    # [FUTURE] detect object with YOLO, SSD, R-DAD 
+    # [FUTURE] detect object with YOLO, SSD, R-DAD
     def detect_object(self):
         # [TODO] sonouti yaru!
         print('[*] detect object')
 
-    
     # send data to cerebrum
     def cerebrum_publisher(self, message):
 
         self._trans_message.data = message
         self.senses_publisher.publish(self._trans_message)
 
-
     # get image from realsense
     def get_image(self, msg):
         self.image = self.bridge.imgmsg_to_cv2(msg)
-
 
     # only one time execute
     def one_time_execute(self, now, previous):
