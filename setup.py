@@ -9,15 +9,22 @@ setup(
     packages=[],
     py_modules=[
         'image_system',
-        'detect_human/HandNet',
-        'detect_human/FaceNet',
-        'detect_human/CocoPoseNet',
-        'detect_human/entity',
-        'detect_human/pose_detector',
-        'detect_human/detect_human',
-        'detect_sex/detect_sex',
-        'detect_sex/classifier',
-        'detect_sex/model',
+    ],
+    data_files=[
+        ('lib/' + package_name, ['package.xml']),
+        ('lib/' + package_name+'/detect_modules/detect_human',
+         ['detect_modules/detect_human/CocoPoseNet.py',
+          'detect_modules/detect_human/FaceNet.py',
+          'detect_modules/detect_human/HandNet.py',
+          'detect_modules/detect_human/detect_human.py',
+          'detect_modules/detect_human/entity.py',
+          'detect_modules/detect_human/pose_detector.py',
+          ]),
+        ('lib/'+package_name+'/detect_modules/detect_sex',
+         ['detect_modules/detect_sex/classifier.py',
+          'detect_modules/detect_sex/detect_sex.py',
+          'detect_modules/detect_sex/model.py'
+          ]),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -37,9 +44,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'image_system = image_system:main',
-            'detect_human = detect_human.detect_human:main',
-            'detect_sex = detect_sex.detect_sex:main',
+            'image_system=image_system:main'
         ],
     },
 )

@@ -1,25 +1,35 @@
-import cv2
 import math
 import time
 import argparse
+
+import cv2
+
 import numpy as np
 from scipy.ndimage.filters import gaussian_filter
 
 import chainer
 from chainer import cuda, serializers, functions as F
 
-from detect_human.entity import params, JointType
-from detect_human.CocoPoseNet import CocoPoseNet
+from .entity import params, JointType
+from .CocoPoseNet import CocoPoseNet
 
 
 class PoseDetector(object):
-    def __init__(self, arch=None, weights_file=None, model=None, device=-1, precise=False):
+    def __init__(
+        self,
+        arch=None,
+        weights_file=None,
+        model=None,
+        device=-1,
+        precise=False
+    ):
+
         self.arch = arch
         self.precise = precise
         if model is not None:
             self.model = model
         else:
-            print('[INFO] [DetectHuman]: LOADING POSE MODEL')
+            print('[INFO] [DetectHuman]: LOADING POSE MODEL',flush=True)
             self.model = params['archs'][arch]()
 
             if weights_file:
@@ -31,7 +41,9 @@ class PoseDetector(object):
             self.model.to_gpu()
 
             # create gaussian filter
-            self.gaussian_kernel = self.create_gaussian_kernel(params['gaussian_sigma'], params['ksize'])[None, None]
+            self.gaussian_kernel = self.create_gaussian_kernel(
+                params['gaussian_sigma'],
+                params['ksize'])[None, None]
             self.gaussian_kernel = cuda.to_gpu(self.gaussian_kernel)
 
     # compute gaussian filter
@@ -73,7 +85,7 @@ class PoseDetector(object):
         return (img_w, img_h)
 
     def compute_peaks_from_heatmaps(self, heatmaps):
-        """all_peaks: shape = [N, 5], column = (jointtype, x, y, score, index)"""
+        """all_peaks: shape = [N,5], column = (jointtype,x,y,score,index)"""
 
         heatmaps = heatmaps[:-1]
 
@@ -82,8 +94,10 @@ class PoseDetector(object):
         if xp == np:
             all_peaks = []
             peak_counter = 0
-            for i , heatmap in enumerate(heatmaps):
-                heatmap = gaussian_filter(heatmap, sigma=params['gaussian_sigma'])
+            for i, heatmap in enumerate(heatmaps):
+                heatmap = gaussian_filter(
+                    heatmap,
+                    sigma=params['gaussian_sigma'])
                 map_left = xp.zeros(heatmap.shape)
                 map_right = xp.zeros(heatmap.shape)
                 map_top = xp.zeros(heatmap.shape)
@@ -101,7 +115,11 @@ class PoseDetector(object):
                     heatmap > map_bottom,
                 ))
 
-                peaks = zip(xp.nonzero(peaks_binary)[1], xp.nonzero(peaks_binary)[0])  # [(x, y), (x, y)...]のpeak座標配列
+                peaks = zip(
+                    xp.nonzero(peaks_binary)[1],
+                    xp.nonzero(peaks_binary)[0])
+                # [(x, y), (x, y)...]のpeak座標配列
+
                 peaks_with_score = [(i,) + peak_pos + (heatmap[peak_pos[1], peak_pos[0]],) for peak_pos in peaks]
                 peaks_id = range(peak_counter, peak_counter + len(peaks_with_score))
                 peaks_with_score_and_id = [peaks_with_score[i] + (peaks_id[i], ) for i in range(len(peaks_id))]
@@ -197,22 +215,22 @@ class PoseDetector(object):
                         joint_found_subset_index[joint_found_cnt] = subset_ind
                         joint_found_cnt += 1
 
-                if joint_found_cnt == 1: # そのconnectionのどちらかのjointをsubsetが持っている場合
+                if joint_found_cnt == 1:  # そのconnectionのどちらかのjointをsubsetが持っている場合
                     found_subset = subsets[joint_found_subset_index[0]]
                     # 肩->耳のconnectionの組合せを除いて、始点の一致しか起こり得ない。肩->耳の場合、終点が一致していた場合は、既に顔のbone検出済みなので処理不要。
                     if found_subset[joint_b] != ind_b:
                         found_subset[joint_b] = ind_b
-                        found_subset[-1] += 1 # increment joint count
+                        found_subset[-1] += 1  # increment joint count
                         found_subset[-2] += candidate_peaks[ind_b, 3] + score  # joint bのscoreとconnectionの積分値を加算
 
-                elif joint_found_cnt == 2: # subset1にjoint1が、subset2にjoint2がある場合(肩->耳のconnectionの組合せした起こり得ない)
+                elif joint_found_cnt == 2:  # subset1にjoint1が、subset2にjoint2がある場合(肩->耳のconnectionの組合せした起こり得ない)
                     # print('limb {}: 2 subsets have any joint'.format(l))
                     found_subset_1 = subsets[joint_found_subset_index[0]]
                     found_subset_2 = subsets[joint_found_subset_index[1]]
 
                     membership = ((found_subset_1 >= 0).astype(int) + (found_subset_2 >= 0).astype(int))[:-2]
                     if not np.any(membership == 2):  # merge two subsets when no duplication
-                        found_subset_1[:-2] += found_subset_2[:-2] + 1 # default is -1
+                        found_subset_1[:-2] += found_subset_2[:-2] + 1  # default is -1
                         found_subset_1[-2:] += found_subset_2[-2:]
                         found_subset_1[-2:] += score  # connectionの積分値のみ加算(jointのscoreはmerge時に全て加算済み)
                         subsets = np.delete(subsets, joint_found_subset_index[1], axis=0)
@@ -266,8 +284,8 @@ class PoseDetector(object):
 
     def compute_limbs_length(self, joints):
         limbs = []
-        limbs_len = np.zeros(len(params["limbs_point"]))
-        for i, joint_indices in enumerate(params["limbs_point"]):
+        limbs_len = np.zeros(len(params['limbs_point']))
+        for i, joint_indices in enumerate(params['limbs_point']):
             if joints[joint_indices[0]] is not None and joints[joint_indices[1]] is not None:
                 limbs.append([joints[joint_indices[0]], joints[joint_indices[1]]])
                 limbs_len[i] = np.linalg.norm(joints[joint_indices[1]][:-1] - joints[joint_indices[0]][:-1])
@@ -370,8 +388,8 @@ class PoseDetector(object):
 
     def crop_hands(self, img, person_pose, unit_length):
         hands = {
-            "left": None,
-            "right": None
+            'left': None,
+            'right': None
         }
 
         if person_pose[JointType.LeftHand][2] > 0:
@@ -380,9 +398,9 @@ class PoseDetector(object):
                 direction_vec = person_pose[JointType.LeftHand][:-1] - person_pose[JointType.LeftElbow][:-1]
                 crop_center += (0.3 * direction_vec).astype(crop_center.dtype)
             hand_img, bbox = self.crop_around_keypoint(img, crop_center, unit_length * 0.95)
-            hands["left"] = {
-                "img": hand_img,
-                "bbox": bbox
+            hands['left'] = {
+                'img': hand_img,
+                'bbox': bbox
             }
 
         if person_pose[JointType.RightHand][2] > 0:
@@ -391,9 +409,9 @@ class PoseDetector(object):
                 direction_vec = person_pose[JointType.RightHand][:-1] - person_pose[JointType.RightElbow][:-1]
                 crop_center += (0.3 * direction_vec).astype(crop_center.dtype)
             hand_img, bbox = self.crop_around_keypoint(img, crop_center, unit_length * 0.95)
-            hands["right"] = {
-                "img": hand_img,
-                "bbox": bbox
+            hands['right'] = {
+                'img': hand_img,
+                'bbox': bbox
             }
 
         return hands
