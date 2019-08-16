@@ -6,12 +6,9 @@ source install/local_setup.bash
 ```
 then,
 ```
-cd ~/your/workspace/install/image_system/lib/image_system
-mkdir model && cd model
-cp ~/your/workspace/image_system/model/cifier_adam.npz cifier_adam.npz
-cp ~/your/workspace/image_system/model/coco_posenet.npz coco_posenet.npz
-cp ~/your/workspace/image_system/model/haarcascade_frontalface_alt.xml haarcascade_frontalface_alt.xml
-
+cd ~/your/workspace/image_system
+mkdir model
+bash get_npz.bash
 ```
 # Usage
 ros2 run image_system image_system
