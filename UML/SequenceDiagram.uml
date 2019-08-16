@@ -1,0 +1,10 @@
+@startuml
+cerebrum -> image_system: recieve commands (human, sex, object)
+image_system -> detect_human: order to detect human 
+image_system -> detect_sex: order to detect sex (male, female, others)
+image_system -> detect_object: order to detect objects
+
+detect_human --> cerebrum: send human count
+detect_sex --> cerebrum: send sex
+detect_object --> cerebrum: send object names.
+@enduml
